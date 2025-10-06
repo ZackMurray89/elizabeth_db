@@ -1,13 +1,18 @@
 cmake_minimum_required(VERSION 3.15)
-project(nexsql VERSION 1.0.0 LANGUAGES C)
+project(elizabeth_db VERSION 1.0.0 LANGUAGES C)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
 
 # Compiler Flags
-set(CMAKE_C_FLAGS_DEBUG "-g -O0 -Wall - Wextra -Wpedantic -fsanitize=address,undefined")
+set(CMAKE_C_FLAGS_DEBUG "-g -O0 -Wall -Wextra -Wpedantic -fsanitize=address,undefined")
 set(CMAKE_C_FLAGS_RELEASE "-O3 -DNDEBUG")
+
+# Find pthread On Unix System
+if(NOT WIN32)
+  find_package(Threads REQUIRED)
+endif()
 
 # Main Executable
 add_executable(database
@@ -18,6 +23,11 @@ add_executable(database
 )
 
 target_include_directories(database PRIVATE include src)
+
+# Link pthread On Unix System
+if(NOT WIN32)
+  target_link_libraries(database Threads::Threads)
+endif()
 
 # Test Executable
 enable_testing()

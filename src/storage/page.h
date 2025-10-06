@@ -19,7 +19,7 @@ typedef pthread_mutex_t database_mutex_t;
 typedef enum {
     PAGE_TYPE_DATA = 1,   // Row Data (users, posts, etc)
     PAGE_TYPE_INDEX = 2,  // B+ Tree Index Pages
-    PAGE_TYPE_BLOG = 3,   // Large Objects (images, files)
+    PAGE_TYPE_BLOB = 3,   // Large Objects (images, files)
     PAGE_TYPE_META = 4    // Metadata Pages
 } page_type_t;
 
@@ -57,7 +57,7 @@ typedef enum {
 } record_type_t;
 
 // Record Header For Type Safety And Optimization
-typedef struct __attribute__((paced)) {
+typedef struct __attribute__((packed)) {
     record_type_t type;
     uint32_t size;
     uint64_t created_at;  // Timestamp For Web Apps
@@ -77,12 +77,12 @@ typedef struct {
 
 typedef struct {
     buffer_frame_t frames[BUFFER_POOL_SIZE];
-    uint32_t clock_hand;    // For Clock Replacement Algorithm
-    pthread_mutex_t mutex;  // Thread Safety For Web Servers
+    uint32_t clock_hand;     // For Clock Replacement Algorithm
+    database_mutex_t mutex;  // Thread Safety For Web Servers
 } buffer_pool_t;
 
 // Funtion Declarations
-database_result_t page_int(page_t *page, page_id_t id, page_type_t type);
+database_result_t page_init(page_t *page, page_id_t id, page_type_t type);
 database_result_t page_insert_record(page_t *page, const void *data,
                                      uint16_t size, uint16_t *slot_id);
 database_result_t page_get_record(const page_t *page, uint16_t slot_id,
@@ -91,7 +91,7 @@ database_result_t page_delete_record(page_t *page, uint16_t slot_id);
 uint16_t page_free_space(const page_t *page);
 
 // Buffer Pool Operations
-database_result_t bugger_pool_init(buffer_pool_t *pool);
+database_result_t buffser_pool_init(buffer_pool_t *pool);
 page_t *buffer_pool_get_page(buffer_pool_t *pool, page_id_t page_id);
 database_result_t buffer_pool_unpin_page(buffer_pool_t *pool, page_id_t page_id,
                                          bool dirty);

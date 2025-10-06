@@ -89,10 +89,10 @@ database_result_t page_insert_record(page_t *page, const void *data,
     return DATABASE_OK;
 }
 
-database_result_t page_get_Record(const page_t *page, uint16_t slot_id,
+database_result_t page_get_record(const page_t *page, uint16_t slot_id,
                                   void *buffer, uint16_t *size) {
     DATABASE_ASSERT(page != NULL && buffer != NULL && size != NULL,
-                    "Invalid Perameters");
+                    "Invalid Parameters");
 
     if (slot_id >= page->header.record_count) {
         return DATABASE_NOT_FOUND;
@@ -184,7 +184,7 @@ page_t *buffer_pool_get_page(buffer_pool_t *pool, page_id_t page_id) {
 
             frame->page_id = page_id;
             frame->dirty = false;
-            frame->pinned - true;
+            frame->pinned = true;
             frame->ref_count = 1;
             frame->last_access = time(NULL);
 
